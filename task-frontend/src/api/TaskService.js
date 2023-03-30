@@ -10,6 +10,10 @@ class TaskService {
     list() {
         return this.tasks;
     }
+
+    delete(id) {
+        this.tasks = this.tasks.filter(task => task.id !== id);
+    }
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
