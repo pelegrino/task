@@ -14,7 +14,13 @@ class TaskService {
     delete(id) {
         this.tasks = this.tasks.filter(task => task.id !== id);
     }
+
+    save(task) {
+        this.tasks.map(t => task.id !== t.id ? t : task);
+    }
 }
+
+
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default new TaskService();
