@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import TaskService from '../api/TaskService';
+import { Redirect } from 'react-router-dom';
 
 class TaskForm extends Component {
 
@@ -10,53 +12,59 @@ class TaskForm extends Component {
                 id: 0,
                 description: "",
                 whenToDo: ""
-            }
+            },
+
+            redirect: false
         }
         
         this.onSubmitHandler = this.onSubmitHandler.bind(this);
-        this.onsInputChangeHandler = this.onsInputChangeHandler.bind(this);
+        this.onInputChangeHandler = this.onInputChangeHandler.bind(this);
     }
     
 
     onSubmitHandler(event) {
         event.preventDefault();
-
+        TaskService.save(this.state.task);
+        this.setState({ redirect: true });
     }
 
-
-    onsInputChangeHandler(event) {
+    onInputChangeHandler(event) {
         const field = event.target.name;
         const value = event.target.value;
-
-        this.setState(prevState => ({ taks: { ...prevState.task, [field]: value }}));
+        this.setState(prevState => ({ task: { ...prevState.task, [field]: value }}));
     }
 
     render() {
+        if (this.state.redirect) {
+            return <Redirect to="/" />
+        }
+
+
         return (
             <div>
                 <h1>Cadastro da Tarefa</h1>
                 <form onSubmit={this.onSubmitHandler}>
-                    <div className='form-group'>
-                        <label  htmlFor='description'>Descrição</label>
+                    <div className="form-group">
+                        <label htmlFor="description">Descrição</label>
                         <input 
-                            type='text' 
-                            className='form-control' 
-                            name='description' 
-                            placeholder='Digite a descrição'
-                            onChange={this.onsInputChangeHandler} />
+                            type="text" 
+                            className="form-control" 
+                            name="description" 
+                            placeholder="Digite a descrição"
+                            onChange={this.onInputChangeHandler} />
                     </div>
-                    <div className='form-group'>
-                        <label  htmlFor='whenToDo'>Data</label>
+                    <div className="form-group">
+                        <label htmlFor="whenToDo">Data</label>
                         <input 
-                            type='date' 
-                            className='form-control' 
-                            name='whenToDo' 
-                            placeholder='Digite a data'
-                            onChange={this.onsInputChangeHandler} />
+                            type="date" 
+                            className="form-control" 
+                            name="whenToDo" 
+                            placeholder="Informe a data"
+                            onChange={this.onInputChangeHandler} />
                     </div>
-                    <button type='submit' className='btn btn-primary'>Cadastrar</button>
+                    <button type="submit" className="btn btn-primary">Cadastrar</button>
                     &nbsp;&nbsp;
-                    <button type='button' className='btn btn-primary'>Cancelar</button>
+                    <button type="button" className="btn btn-primary">Cancelar</button>
                 </form>
             </div>
         );
