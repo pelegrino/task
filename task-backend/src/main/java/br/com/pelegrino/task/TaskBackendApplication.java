@@ -10,7 +10,6 @@ import org.springframework.data.rest.core.event.ValidatingRepositoryEventListene
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import br.com.pelegrino.task.domain.task.Task;
 
@@ -26,10 +25,17 @@ public class TaskBackendApplication implements RepositoryRestConfigurer {
 	}
 	
 	@Override
-	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
+	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
 		config.exposeIdsFor(Task.class);
-	}
-
+		config.getCorsRegistry()
+		.addMapping("/**")
+		.allowedOrigins("*")
+		.allowedMethods("GET", "POST", "PUT", "DELETE");
+		
+		logger.info("Repository CORS Setup... Ok!");
+}
+	
+	
 	@Bean
 	public Validator validator() {
 		return new LocalValidatorFactoryBean();
@@ -41,6 +47,6 @@ public class TaskBackendApplication implements RepositoryRestConfigurer {
 		vrel.addValidator("beforeCreate", validator);
 		vrel.addValidator("beforeSave", validator);
 		
-		logger.info("Configure validator... Ok!");
+		logger.info("Configure Validator... Ok!");
 	}
 }
