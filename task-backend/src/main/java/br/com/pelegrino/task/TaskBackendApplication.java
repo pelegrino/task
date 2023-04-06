@@ -1,5 +1,7 @@
 package br.com.pelegrino.task;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +16,13 @@ import br.com.pelegrino.task.domain.task.Task;
 
 @SpringBootApplication
 public class TaskBackendApplication implements RepositoryRestConfigurer {
+	
+	private static final Logger logger = LoggerFactory.getLogger(TaskBackendApplication.class);
+	
 
 	public static void main(String[] args) {
 		SpringApplication.run(TaskBackendApplication.class, args);
+		logger.info("Task in action!");
 	}
 	
 	@Override
@@ -34,5 +40,7 @@ public class TaskBackendApplication implements RepositoryRestConfigurer {
 		Validator validator = validator();
 		vrel.addValidator("beforeCreate", validator);
 		vrel.addValidator("beforeSave", validator);
+		
+		logger.info("Configure validator... Ok!");
 	}
 }
