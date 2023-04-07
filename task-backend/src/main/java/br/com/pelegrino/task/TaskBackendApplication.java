@@ -37,7 +37,7 @@ public class TaskBackendApplication implements RepositoryRestConfigurer {
 	
 	
 	@Bean
-	public Validator validator() {
+	Validator validator() {
 		return new LocalValidatorFactoryBean();
 	}
 	

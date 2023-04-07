@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import br.com.pelegrino.task.domain.task.Task;
@@ -28,8 +30,8 @@ public class InsertTestData {
 	@EventListener
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		
-		//TODO: Criptografar senha
-		AppUser appUser = new AppUser("John", "abc", "John Coder");
+		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		AppUser appUser = new AppUser("John", encoder.encode("abc"), "John Coder");
 		appUserRepository.save(appUser);
 	
 		LocalDate baseDate = LocalDate.parse("2025-02-01");
