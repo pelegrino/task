@@ -3,6 +3,7 @@ package br.com.pelegrino.task.domain.task;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -16,6 +17,7 @@ import org.hibernate.validator.constraints.Length;
 import br.com.pelegrino.task.domain.user.AppUser;
 
 @Entity
+@EntityListeners(TaskListener.class)
 public class Task {
 	
 	@Id
