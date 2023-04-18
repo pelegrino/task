@@ -16,6 +16,15 @@ class AuthService {
                 onLogin(false);
             });
     }
+
+    getJWTToken() {
+        return sessionStorage.getItem(JWT_TOKEN_NAME);
+    }
+
+    isAuthenticated() {
+        return this.getJWTToken() != null;
+    }
+
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export

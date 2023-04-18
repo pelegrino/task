@@ -3,6 +3,7 @@ import TaskService from '../api/TaskService';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css"
 import { Redirect } from 'react-router-dom';
+import AuthService from '../api/AuthService';
 
 
 
@@ -47,6 +48,11 @@ class TaskListTable extends Component {
     }
     
     render() {
+        if (!AuthService.isAuthenticated()) {
+            return <Redirect to="/login" />
+        }
+
+
         if (this.state.editId > 0) {
             return <Redirect to={`/form/${this.state.editId}`} />
         }
