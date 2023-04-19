@@ -1,3 +1,7 @@
+import axios from "axios";
+import AuthService from "./AuthService";
+import { API_ENDPOINT } from "../constanst";
+
 class TaskService {
     constructor() {
         this.tasks = [
@@ -7,8 +11,10 @@ class TaskService {
         ]
     }
 
-    list() {
-        return this.tasks;
+    list(onFetch, onError) {
+        axios.get(`${API_ENDPOINT}/tasks?sort=whenToDo,asc`, this.buildAuthHeader())
+            .then(response => onFetch(response.data.content))
+            .catch(e => onError(e));
     }
 
     load(id) {
@@ -27,6 +33,14 @@ class TaskService {
            const taskId = Math.max(...this.tasks.map(t => t.id)) +1;
            task.id = taskId;
            this.tasks.push(task);
+        }
+    }
+
+    buildAuthHeader() {
+        return {
+            headers: {
+                'Authorization': `Bearer ${AuthService.getJWTToken()}`
+            } 
         }
     }
 }
