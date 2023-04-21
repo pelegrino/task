@@ -17,8 +17,10 @@ class TaskService {
             .catch(e => onError(e));
     }
 
-    load(id) {
-        return this.tasks.filter(t => t.id === id)[0];
+    load(id, onLoad, onError) {
+        axios.get(`${API_ENDPOINT}/tasks/${id}`, this.buildAuthHeader())
+            .then(response => onLoad(response.data))
+            .catch(e => onError(e));
     }
 
     delete(id, onDelete, onError) {
