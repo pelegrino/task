@@ -29,6 +29,17 @@ class AuthService {
         sessionStorage.removeItem(JWT_TOKEN_NAME);
     }
 
+    getJWTTokenData() {
+        const jwtToken = this.getJWTToken();
+        if (jwtToken == null) {
+            return null;
+        }
+        
+        const jwtTokenData = atob(jwtToken.split(".")[1])
+        return JSON.parse(jwtTokenData);
+    }
+    
+
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
