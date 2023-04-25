@@ -25,6 +25,10 @@ class AuthService {
         return this.getJWTToken() != null;
     }
 
+    logout() {
+        sessionStorage.removeItem(JWT_TOKEN_NAME);
+    }
+
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export

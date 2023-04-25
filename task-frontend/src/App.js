@@ -20,7 +20,7 @@ class App extends Component {
     return (
       <BrowserRouter>
       <div className="App">
-        <NavBar />
+        <NavBar onLinkClick={this.onRefreshHandler} />
         <div className="container" style={{ marginTop: 20 }}>
         <Switch>
           <Route exact path="/login" render={() => <Login onLoginSuccess={this.onRefreshHandler} /> } />
