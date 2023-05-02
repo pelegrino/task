@@ -1,23 +1,39 @@
 const { useState } = require("react");
 const { AUTH_ENDPOINT, CREDENTIALS_NAME } = require("../constanst");
 const { default: axios } = require("axios");
+const { useEffect } = require("react");
 
-const useAuth = () => {
+export const useAuth = () => {
     const [ credentials, setCredentials ] = useState({ username: null, displayName: null, token: null });
     const [ error, setError ] = useState(null);
+    const [ processing, setProcessing ] = useState(null);
 
-    const login = (username, password) => {
+    useEffect(() => {
+        loadCredentials();
+    }, []);
+
+    const login = async (username, password) => {
         const loginInfo = { username: username, password: password };
-        axios
-            .post(`${AUTH_ENDPOINT}/login`, loginInfo)
-            .then(response => {
-                const token = response.headers['authorization'].replace("Bearer ", "");
-                storeCredentials(token);
+        setProcessing(true);
+    
+        try {
+            const response = await axios.post(`${AUTH_ENDPOINT}/login`, loginInfo);
+            
+            const token = response.headers['authorization'].replace("Bearer ", "");
+            storeCredentials(token);
+            setProcessing(false);
 
-            }).catch(error => {
-                console.error(error);
-                setError("O login não pode ser realizado");
-            });
+        } catch (error) {    
+            console.error(error);
+            setError("O login não pode ser realizado");
+            setProcessing(false);
+        }
+
+    }
+
+    const logout = () => {
+        sessionStorage.removeItem(CREDENTIALS_NAME);
+        setCredentials({ username: null, displayName: null, token: null });
     }
 
     const storeCredentials = (token) => {
@@ -26,4 +42,18 @@ const useAuth = () => {
         sessionStorage.setItem(CREDENTIALS_NAME, JSON.stringify(credentials));
         setCredentials(credentials);
     }
+
+    const loadCredentials = () => {
+        const storedCredentials = sessionStorage.getItem(CREDENTIALS_NAME);
+
+            if(storedCredentials !== null) {
+                setCredentials(JSON.parse(storedCredentials));
+            }
+    }
+
+    const isAuthenticated = () => {
+        return sessionStorage.getItem(CREDENTIALS_NAME) !== null;
+    }
+
+    return { login, logout, isAuthenticated, credentials, error, processing }
 }
