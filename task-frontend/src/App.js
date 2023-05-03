@@ -13,10 +13,10 @@ const App = (props) => {
       <AuthContext.Provider value={auth} >
       <BrowserRouter>
       <div className="App">
-        <NavBar onLinkClick={this.onRefreshHandler} />
+        <NavBar />
         <div className="container" style={{ marginTop: 20 }}>
         <Switch>
-          <Route exact path="/login" render={() => <Login onLoginSuccess={this.onRefreshHandler} /> } />
+          <Route exact path="/login" component={Login} />
           <Route exact path="/form" component={TaskForm} />
           <Route exact path="/form/:id" component={TaskForm} />
           <Route path="/" component={TaskListTable} />

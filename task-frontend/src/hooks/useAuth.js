@@ -1,16 +1,15 @@
-import { createContext } from "react";
+import react from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { AUTH_ENDPOINT, CREDENTIALS_NAME } from "../constanst";
 
-const { useState } = require("react");
-const { AUTH_ENDPOINT, CREDENTIALS_NAME } = require("../constanst");
-const { default: axios } = require("axios");
-const { useEffect } = require("react");
 
-export const AuthContext = createContext();
+export const AuthContext = react.createContext();
 
 export const useAuth = () => {
     const [ credentials, setCredentials ] = useState({ username: null, displayName: null, token: null });
     const [ error, setError ] = useState(null);
-    const [ processing, setProcessing ] = useState(null);
+    const [ processing, setProcessing ] = useState(false);
 
     useEffect(() => {
         loadCredentials();
@@ -22,7 +21,6 @@ export const useAuth = () => {
     
         try {
             const response = await axios.post(`${AUTH_ENDPOINT}/login`, loginInfo);
-            
             const token = response.headers['authorization'].replace("Bearer ", "");
             storeCredentials(token);
             setProcessing(false);
@@ -41,7 +39,7 @@ export const useAuth = () => {
     }
 
     const storeCredentials = (token) => {
-        const tokenData = atob(token.split(".")[1]);
+        const tokenData = JSON.parse(atob(token.split(".")[1]));
         const credentials = { username: tokenData.sub, displayName: tokenData.displayName, token: token };
         sessionStorage.setItem(CREDENTIALS_NAME, JSON.stringify(credentials));
         setCredentials(credentials);
@@ -59,5 +57,5 @@ export const useAuth = () => {
         return sessionStorage.getItem(CREDENTIALS_NAME) !== null;
     }
 
-    return { login, logout, isAuthenticated, credentials, error, processing }
+    return { login, logout, isAuthenticated, credentials, error, processing };
 }
