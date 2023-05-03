@@ -1,7 +1,11 @@
+import { createContext } from "react";
+
 const { useState } = require("react");
 const { AUTH_ENDPOINT, CREDENTIALS_NAME } = require("../constanst");
 const { default: axios } = require("axios");
 const { useEffect } = require("react");
+
+export const AuthContext = createContext();
 
 export const useAuth = () => {
     const [ credentials, setCredentials ] = useState({ username: null, displayName: null, token: null });
