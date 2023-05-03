@@ -4,6 +4,7 @@ import { AuthContext } from "./useAuth"
 export const useNavBarItems = () => {
     const auth = useContext(AuthContext);
     const [ items, setItems ] = useState([]);
+    const [ helloMessage, setHelloMessage ] = useState(null);
 
     useEffect(() => {
 
@@ -20,7 +21,11 @@ export const useNavBarItems = () => {
         ];
 
         if (auth.isAuthenticated()) {
-            items.push({ name: "Logout", active: false, href: "#", onClick:() => auth.logout() });
+            items.push({ name: "Logout", active: false, href: "#", onClick:() => { 
+                auth.logout();
+                setHelloMessage(null) 
+            }});
+            setHelloMessage(`Olá, ${auth.credentials.displayName}!`);
         }
 
         setItems(items);
@@ -28,5 +33,5 @@ export const useNavBarItems = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth.credentials]);
 
-    return { items };
+    return { items, helloMessage };
 }
