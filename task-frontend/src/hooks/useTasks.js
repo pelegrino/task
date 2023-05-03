@@ -11,6 +11,7 @@ export const useTasks = () => {
     const [ error, setError ] = useState(null);
     const [ processing, setProcessing ] = useState(false);
     const [ taskRemoved, setTaskRemoved ] = useState(null);
+    const [ taskUpdated, setTaskUpdated ] = useState(null);
 
     const list = async () => {
 
@@ -40,6 +41,35 @@ export const useTasks = () => {
 
     }
 
+    const save = async (taskToSave, onlyStatus = false) => {
+
+        try {
+            setProcessing(!onlyStatus);
+            setTaskUpdated(null);
+            setError(null);
+
+            if (taskToSave.id === 0) {
+                await axios.post(`${API_ENDPOINT}/tasks`, taskToSave, buildAuthHeader());
+
+            } else {
+                await axios.put(`${API_ENDPOINT}/tasks/${taskToSave.id}`, taskToSave, buildAuthHeader())
+                
+            }
+
+            setProcessing(false);
+            setTaskUpdated(taskToSave);
+
+        } catch (error) {
+            handleError(error);
+
+        }
+
+    }
+
+    const clearTaskUpdated = () => {
+        setTaskUpdated(null);
+    }
+
     const clearTaskRemoved = () => {
         setTaskRemoved(null);
     }
@@ -65,5 +95,5 @@ export const useTasks = () => {
         setProcessing(false);
     }
 
-    return { taskList, error, processing, taskRemoved, list, remove, clearTaskRemoved };
+    return { taskList, error, processing, taskRemoved, taskUpdated, list, remove, save, clearTaskRemoved, clearTaskUpdated };
 }
