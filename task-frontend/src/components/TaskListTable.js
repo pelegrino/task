@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css"
 import { Redirect } from 'react-router-dom';
 import Spinner from './Spinner';
@@ -20,16 +20,20 @@ const TaskListTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ auth.credentials ]);
 
-   /* onDeleteHandler(id) {
+    const onDeleteHandler = (taskToDelete) => {
         if(window.confirm("Deseja mesmo excluir esta tarefa?")) {
-            TaskService.delete(id, 
-                () => {
-                    this.listTasks();
-                    toast.success("Tarefa excluída!", { position: toast.POSITION.BOTTOM_LEFT });
-                },
-                error => this.setErrorState(error));         
+            tasks.remove(taskToDelete);
         }    
-    }*/
+    }
+
+    useEffect(() => {
+        if (tasks.taskRemoved !== null) {
+            toast.success(`Tarefa ${tasks.taskRemoved.id} excluída!`, 
+            { position: toast.POSITION.BOTTOM_LEFT});
+            tasks.clearTaskRemoved();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tasks.taskRemoved]);
    
 
     if (!auth.isAuthenticated()) {
@@ -82,7 +86,7 @@ const TaskListTable = () => {
                                             type='button' 
                                             className='btn btn-danger' 
                                             value="Excluir" 
-                                            onClick={() => false }
+                                            onClick={() => onDeleteHandler(task) }
                                             />
                                     </td>
                                 </tr>
