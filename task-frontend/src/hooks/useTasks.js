@@ -20,7 +20,16 @@ export const useTasks = () => {
             setProcessing(true);
             setError(null);
             const response = await axios.get(`${API_ENDPOINT}/tasks?sort=whenToDo,asc`, buildAuthHeader());
-            setTaskList(response.data.content);
+            const content = response.data.content;
+
+            if(content.length === 1 && content[0].value && content[0].value.length === 0) {
+                setTaskList([]);
+
+            } else {
+                setTaskList(content);
+
+            }
+
             setProcessing(false);
         
         } catch (error) {
