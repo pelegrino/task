@@ -1,15 +1,31 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Alert from './Alert';
 import { AuthContext} from '../hooks/useAuth'
 import { useTasks } from '../hooks/useTasks'
 
-const TaskForm = () =>   {
+const TaskForm = (props) =>   {
     const auth = useContext(AuthContext);
     const tasks = useTasks();
     const [ task, setTask ] = useState({ id: 0, description: "", whenToDo: "" });
     const [ redirect, setRedirect ] = useState(false);
 
+    useEffect(() => {
+        const editId = props.match.params.id;
+
+        if (editId && auth.credentials.username !== null) {
+            tasks.load(~~editId);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ auth.credentials ]);
+
+    useEffect(() => {
+        if (tasks.taskLoaded) {
+            setTask(tasks.taskLoaded);
+            tasks.clearTaskLoaded();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ tasks.taskLoaded ]);
 
     const onSubmitHandler = (event) => {
         event.preventDefault();
@@ -28,7 +44,7 @@ const TaskForm = () =>   {
         }
 
 
-        if (redirect || task.taskUpdated) {
+        if (redirect || tasks.taskUpdated) {
             return <Redirect to="/" />
         }
 
